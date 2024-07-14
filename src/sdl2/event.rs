@@ -76,7 +76,7 @@ impl crate::EventSubsystem {
     /// ```no_run
     /// use sdl2::event::Event;
     ///
-    /// let sdl_context = sdl2::init().unwrap();
+    /// let sdl_context = unsafe { sdl2::init().unwrap() };
     /// let event_subsystem = sdl_context.event().unwrap();
     ///
     /// // Read up to 1024 events
@@ -134,7 +134,7 @@ impl crate::EventSubsystem {
     ///
     /// # Example
     /// ```
-    /// let sdl = sdl2::init().unwrap();
+    /// let sdl = unsafe { sdl2::init().unwrap() };
     /// let ev = sdl.event().unwrap();
     ///
     /// let custom_event_type_id = unsafe { ev.register_event().unwrap() };
@@ -206,7 +206,7 @@ impl crate::EventSubsystem {
     ///     a: i32
     /// }
     ///
-    /// let sdl = sdl2::init().unwrap();
+    /// let sdl = unsafe { sdl2::init().unwrap() };
     /// let ev = sdl.event().unwrap();
     /// let mut ep = sdl.event_pump().unwrap();
     ///
@@ -243,7 +243,7 @@ impl crate::EventSubsystem {
     ///
     /// # Example: dump every event to stderr
     /// ```
-    /// let sdl = sdl2::init().unwrap();
+    /// let sdl = unsafe { sdl2::init().unwrap() };
     /// let ev = sdl.event().unwrap();
     ///
     /// // `let _ = ...` is insufficient, as it is dropped immediately.
@@ -2697,7 +2697,7 @@ impl crate::EventPump {
     ///
     /// # Example
     /// ```no_run
-    /// let sdl_context = sdl2::init().unwrap();
+    /// let sdl_context = unsafe { sdl2::init().unwrap() };
     /// let mut event_pump = sdl_context.event_pump().unwrap();
     ///
     /// for event in event_pump.poll_iter() {
@@ -2844,7 +2844,7 @@ impl EventSender {
     ///     a: i32
     /// }
     ///
-    /// let sdl = sdl2::init().unwrap();
+    /// let sdl = unsafe { sdl2::init().unwrap() };
     /// let ev = sdl.event().unwrap();
     /// let mut ep = sdl.event_pump().unwrap();
     ///

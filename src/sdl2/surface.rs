@@ -226,7 +226,7 @@ impl<'a> Surface<'a> {
     /// use sdl2::video::Window;
     ///
     /// // We init systems.
-    /// let sdl_context = sdl2::init().expect("failed to init SDL");
+    /// let sdl_context = unsafe { sdl2::init().expect("failed to init SDL") };
     /// let video_subsystem = sdl_context.video().expect("failed to get video context");
     ///
     /// // We create a window.

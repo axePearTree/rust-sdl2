@@ -292,7 +292,7 @@ impl<'s> RenderTarget for Surface<'s> {
 /// # use sdl2::video::Window;
 /// # use sdl2::pixels::Color;
 /// # use sdl2::rect::Rect;
-/// # let sdl_context = sdl2::init().unwrap();
+/// # let sdl_context = unsafe { sdl2::init().unwrap() };
 /// # let video_subsystem = sdl_context.video().unwrap();
 /// let window = video_subsystem.window("Example", 800, 600).build().unwrap();
 ///
@@ -895,7 +895,7 @@ impl<T> TextureCreator<T> {
     /// use sdl2::video::Window;
     ///
     /// // We init systems.
-    /// let sdl_context = sdl2::init().expect("failed to init SDL");
+    /// let sdl_context = unsafe { sdl2::init().expect("failed to init SDL") };
     /// let video_subsystem = sdl_context.video().expect("failed to get video context");
     ///
     /// // We create a window.
@@ -2541,7 +2541,7 @@ impl<'r> Texture<'r> {
     /// use sdl2::video::Window;
     ///
     /// // We init systems.
-    /// let sdl_context = sdl2::init().expect("failed to init SDL");
+    /// let sdl_context = unsafe { sdl2::init().expect("failed to init SDL") };
     /// let video_subsystem = sdl_context.video().expect("failed to get video context");
     ///
     /// // We create a window.
@@ -2575,7 +2575,7 @@ impl<'r> Texture<'r> {
     /// use sdl2::video::Window;
     ///
     /// // We init systems.
-    /// let sdl_context = sdl2::init().expect("failed to init SDL");
+    /// let sdl_context = unsafe { sdl2::init().expect("failed to init SDL") };
     /// let video_subsystem = sdl_context.video().expect("failed to get video context");
     ///
     /// // We create a window.

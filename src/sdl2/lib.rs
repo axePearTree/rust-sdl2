@@ -9,7 +9,7 @@
 //! use std::time::Duration;
 //!
 //! pub fn main() {
-//!     let sdl_context = sdl2::init().unwrap();
+//!     let sdl_context = unsafe { sdl2::init().unwrap() };
 //!     let video_subsystem = sdl_context.video().unwrap();
 //!
 //!     let window = video_subsystem.window("rust-sdl2 demo", 800, 600)

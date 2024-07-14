@@ -350,7 +350,7 @@ impl crate::Sdl {
 /// Mouse utility functions. Access with `Sdl::mouse()`.
 ///
 /// ```no_run
-/// let sdl_context = sdl2::init().unwrap();
+/// let sdl_context = unsafe { sdl2::init().unwrap() };
 ///
 /// // Hide the cursor
 /// sdl_context.mouse().show_cursor(false);

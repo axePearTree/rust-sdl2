@@ -163,7 +163,7 @@ impl crate::VideoSubsystem {
 /// Keyboard utility functions. Access with `Sdl::keyboard()`.
 ///
 /// ```no_run
-/// let sdl_context = sdl2::init().unwrap();
+/// let sdl_context = unsafe { sdl2::init().unwrap() };
 ///
 /// let focused = sdl_context.keyboard().focused_window_id().is_some();
 /// ```
@@ -202,7 +202,7 @@ impl KeyboardUtil {
 /// These functions require the video subsystem to be initialized and are not thread-safe.
 ///
 /// ```no_run
-/// let sdl_context = sdl2::init().unwrap();
+/// let sdl_context = unsafe { sdl2::init().unwrap() };
 /// let video_subsystem = sdl_context.video().unwrap();
 ///
 /// // Start accepting text input events...

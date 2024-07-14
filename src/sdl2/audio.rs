@@ -27,7 +27,7 @@
 //!     }
 //! }
 //!
-//! let sdl_context = sdl2::init().unwrap();
+//! let sdl_context = unsafe { sdl2::init().unwrap() };
 //! let audio_subsystem = sdl_context.audio().unwrap();
 //!
 //! let desired_spec = AudioSpecDesired {

@@ -178,7 +178,7 @@ macro_rules! attrs {
 /// ```no_run
 /// use sdl2::video::GLProfile;
 ///
-/// let sdl_context = sdl2::init().unwrap();
+/// let sdl_context = unsafe { sdl2::init().unwrap() };
 /// let video_subsystem = sdl_context.video().unwrap();
 /// let gl_attr = video_subsystem.gl_attr();
 ///
@@ -411,7 +411,7 @@ pub mod gl_attr {
         ///
         /// # Example
         /// ```no_run
-        /// let sdl_context = sdl2::init().unwrap();
+        /// let sdl_context = unsafe { sdl2::init().unwrap() };
         /// let video_subsystem = sdl_context.video().unwrap();
         /// let gl_attr = video_subsystem.gl_attr();
         ///
@@ -429,7 +429,7 @@ pub mod gl_attr {
         ///
         /// # Example
         /// ```no_run
-        /// let sdl_context = sdl2::init().unwrap();
+        /// let sdl_context = unsafe { sdl2::init().unwrap() };
         /// let video_subsystem = sdl_context.video().unwrap();
         /// let gl_attr = video_subsystem.gl_attr();
         ///
