@@ -10,7 +10,7 @@ const SCREEN_WIDTH: u32 = 800;
 const SCREEN_HEIGHT: u32 = 600;
 
 fn main() -> Result<(), String> {
-    let sdl_context = sdl2::init()?;
+    let sdl_context = unsafe { sdl2::init()? };
     let video_subsys = sdl_context.video()?;
     let window = video_subsys
         .window(

@@ -209,7 +209,7 @@ fn dummy_texture<'a>(
 }
 
 pub fn main() -> Result<(), String> {
-    let sdl_context = sdl2::init()?;
+    let sdl_context = unsafe { sdl2::init()? };
     let video_subsystem = sdl_context.video()?;
 
     // the window is the representation of a window in your operating system,

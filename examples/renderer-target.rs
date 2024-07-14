@@ -6,7 +6,7 @@ use sdl2::pixels::{Color, PixelFormatEnum};
 use sdl2::rect::{Point, Rect};
 
 fn main() -> Result<(), String> {
-    let sdl_context = sdl2::init()?;
+    let sdl_context = unsafe { sdl2::init()? };
     let video_subsystem = sdl_context.video()?;
     let window = video_subsystem
         .window("rust-sdl2 resource-manager demo", 800, 600)

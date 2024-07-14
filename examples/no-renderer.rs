@@ -52,7 +52,7 @@ fn next_gradient(gradient: Gradient) -> Gradient {
 }
 
 pub fn main() -> Result<(), String> {
-    let sdl_context = sdl2::init()?;
+    let sdl_context = unsafe { sdl2::init()? };
     let video_subsystem = sdl_context.video()?;
 
     let mut window = video_subsystem

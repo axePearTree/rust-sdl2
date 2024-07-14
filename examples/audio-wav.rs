@@ -43,7 +43,7 @@ fn main() -> Result<(), String> {
         None => Cow::from(Path::new("./assets/sine.wav")),
         Some(s) => Cow::from(PathBuf::from(s)),
     };
-    let sdl_context = sdl2::init()?;
+    let sdl_context = unsafe { sdl2::init()? };
     let audio_subsystem = sdl_context.audio()?;
 
     let desired_spec = AudioSpecDesired {
@@ -53,7 +53,7 @@ fn main() -> Result<(), String> {
     };
 
     let device = audio_subsystem.open_playback(None, &desired_spec, |spec| {
-        let wav = AudioSpecWAV::load_wav(wav_file).expect("Could not load test WAV file");
+        let wav = AudioSpecWAV::load_wav(wav_file.to_str().unwrap()).expect("Could not load test WAV file");
 
         let cvt = AudioCVT::new(
             wav.format,

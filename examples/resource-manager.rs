@@ -22,7 +22,7 @@ fn main() -> Result<(), String> {
         let image_path = &args[1];
         let font_path = &args[2];
 
-        let sdl_context = sdl2::init()?;
+        let sdl_context = unsafe { sdl2::init()? };
         let video_subsystem = sdl_context.video()?;
         let font_context = sdl2::ttf::init().map_err(|e| e.to_string())?;
         let _image_context = sdl2::image::init(InitFlag::PNG | InitFlag::JPG)?;

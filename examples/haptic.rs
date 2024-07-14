@@ -1,7 +1,7 @@
 extern crate sdl2;
 
 fn main() -> Result<(), String> {
-    let sdl_context = sdl2::init()?;
+    let sdl_context = unsafe { sdl2::init()? };
     let joystick_subsystem = sdl_context.joystick()?;
     let haptic_subsystem = sdl_context.haptic()?;
 

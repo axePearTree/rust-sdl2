@@ -7,7 +7,7 @@ use std::env;
 use std::path::Path;
 
 pub fn run(png: &Path) -> Result<(), String> {
-    let sdl_context = sdl2::init()?;
+    let sdl_context = unsafe { sdl2::init()? };
     let video_subsystem = sdl_context.video()?;
     let _image_context = sdl2::image::init(InitFlag::PNG | InitFlag::JPG)?;
     let window = video_subsystem
@@ -22,7 +22,7 @@ pub fn run(png: &Path) -> Result<(), String> {
         .build()
         .map_err(|e| e.to_string())?;
     let texture_creator = canvas.texture_creator();
-    let texture = texture_creator.load_texture(png)?;
+    let texture = texture_creator.load_texture(png.to_str().unwrap())?;
 
     canvas.copy(&texture, None, None)?;
     canvas.present();

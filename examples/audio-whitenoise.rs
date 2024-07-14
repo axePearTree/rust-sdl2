@@ -22,7 +22,7 @@ impl AudioCallback for MyCallback {
 }
 
 fn main() -> Result<(), String> {
-    let sdl_context = sdl2::init()?;
+    let sdl_context = unsafe { sdl2::init()? };
     let audio_subsystem = sdl_context.audio()?;
 
     let desired_spec = AudioSpecDesired {

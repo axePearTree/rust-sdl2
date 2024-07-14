@@ -8,7 +8,7 @@ use sdl2::rect::Rect;
 use std::time::Duration;
 
 fn main() -> Result<(), String> {
-    let sdl_context = sdl2::init()?;
+    let sdl_context = unsafe { sdl2::init()? };
     let video_subsystem = sdl_context.video()?;
 
     let window = video_subsystem
@@ -32,7 +32,7 @@ fn main() -> Result<(), String> {
 
     // animation sheet and extras are available from
     // https://opengameart.org/content/a-platformer-in-the-forest
-    let temp_surface = sdl2::surface::Surface::load_bmp(Path::new("assets/characters.bmp"))?;
+    let temp_surface = sdl2::surface::Surface::load_bmp("assets/characters.bmp")?;
     let texture = texture_creator
         .create_texture_from_surface(&temp_surface)
         .map_err(|e| e.to_string())?;

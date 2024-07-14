@@ -44,7 +44,7 @@ fn get_centered_rect(rect_width: u32, rect_height: u32, cons_width: u32, cons_he
 }
 
 fn run(font_path: &Path) -> Result<(), String> {
-    let sdl_context = sdl2::init()?;
+    let sdl_context = unsafe { sdl2::init()? };
     let video_subsys = sdl_context.video()?;
     let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string())?;
 
@@ -59,7 +59,7 @@ fn run(font_path: &Path) -> Result<(), String> {
     let texture_creator = canvas.texture_creator();
 
     // Load a font
-    let mut font = ttf_context.load_font(font_path, 128)?;
+    let mut font = ttf_context.load_font(font_path.to_str().unwrap(), 128)?;
     font.set_style(sdl2::ttf::FontStyle::BOLD);
 
     // render a surface, and convert it to a texture bound to the canvas

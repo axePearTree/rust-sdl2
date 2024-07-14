@@ -21,7 +21,7 @@ fn main() -> Result<(), String> {
 fn demo(music_file: &Path, sound_file: Option<&Path>) -> Result<(), String> {
     println!("linked version: {}", sdl2::mixer::get_linked_version());
 
-    let sdl = sdl2::init()?;
+    let sdl = unsafe { sdl2::init()? };
     let _audio = sdl.audio()?;
     let timer = sdl.timer()?;
 
@@ -55,7 +55,7 @@ fn demo(music_file: &Path, sound_file: Option<&Path>) -> Result<(), String> {
 
     println!("query spec => {:?}", sdl2::mixer::query_spec());
 
-    let music = sdl2::mixer::Music::from_file(music_file)?;
+    let music = sdl2::mixer::Music::from_file(music_file.to_str().unwrap())?;
 
     fn hook_finished() {
         println!("play ends! from rust cb");
@@ -70,8 +70,10 @@ fn demo(music_file: &Path, sound_file: Option<&Path>) -> Result<(), String> {
 
     {
         let sound_chunk = match sound_file {
-            Some(sound_file_path) => sdl2::mixer::Chunk::from_file(sound_file_path)
-                .map_err(|e| format!("Cannot load sound file: {:?}", e))?,
+            Some(sound_file_path) => {
+                sdl2::mixer::Chunk::from_file(sound_file_path.to_str().unwrap())
+                    .map_err(|e| format!("Cannot load sound file: {:?}", e))?
+            }
             None => {
                 // One second of 500Hz sine wave using equation A * sin(2 * PI * f * t)
                 // (played at half the volume to save people's ears).

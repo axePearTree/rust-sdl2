@@ -11,7 +11,7 @@ use std::env;
 use std::path::Path;
 
 pub fn run(png: &Path) -> Result<(), String> {
-    let sdl_context = sdl2::init()?;
+    let sdl_context = unsafe { sdl2::init()? };
     let video_subsystem = sdl_context.video()?;
     let _image_context = sdl2::image::init(InitFlag::PNG | InitFlag::JPG)?;
     let window = video_subsystem
@@ -27,7 +27,7 @@ pub fn run(png: &Path) -> Result<(), String> {
         .map_err(|e| e.to_string())?;
 
     let surface =
-        Surface::from_file(png).map_err(|err| format!("failed to load cursor image: {}", err))?;
+        Surface::from_file(png.to_str().unwrap()).map_err(|err| format!("failed to load cursor image: {}", err))?;
     let cursor = Cursor::from_surface(surface, 0, 0)
         .map_err(|err| format!("failed to load cursor: {}", err))?;
     cursor.set();
