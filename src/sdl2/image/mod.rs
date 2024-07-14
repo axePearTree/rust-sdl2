@@ -20,12 +20,14 @@
 //! features = ["image"]
 //! ```
 
+use core::ffi::{c_char, c_int};
+use core::fmt::{self, Display, Formatter};
+
+use alloc::string::String;
 use get_error;
 use render::{Texture, TextureCreator};
 use rwops::RWops;
-use std::ffi::CString;
-use std::os::raw::{c_char, c_int};
-use std::path::Path;
+use alloc::ffi::CString;
 use surface::Surface;
 use sys;
 use sys::image;
@@ -43,8 +45,8 @@ bitflags! {
 }
 
 // This is used for error message for init
-impl ::std::fmt::Display for InitFlag {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+impl Display for InitFlag {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         if self.contains(InitFlag::JPG) {
             f.write_str("INIT_JPG ")?;
         }
@@ -66,21 +68,21 @@ pub trait LoadSurface: Sized {
     // Self is only returned here to type hint to the compiler.
     // The syntax for type hinting in this case is not yet defined.
     // The intended return value is Result<~Surface, String>.
-    fn from_file<P: AsRef<Path>>(filename: P) -> Result<Self, String>;
+    fn from_file(filename: &str) -> Result<Self, String>;
     fn from_xpm_array(xpm: *const *const i8) -> Result<Self, String>;
 }
 
 /// Method extensions to Surface for saving to disk
 pub trait SaveSurface {
-    fn save<P: AsRef<Path>>(&self, filename: P) -> Result<(), String>;
+    fn save(&self, filename: &str) -> Result<(), String>;
     fn save_rw(&self, dst: &mut RWops) -> Result<(), String>;
 }
 
 impl<'a> LoadSurface for Surface<'a> {
-    fn from_file<P: AsRef<Path>>(filename: P) -> Result<Surface<'a>, String> {
+    fn from_file(filename: &str) -> Result<Surface<'a>, String> {
         //! Loads an SDL Surface from a file
         unsafe {
-            let c_filename = CString::new(filename.as_ref().to_str().unwrap()).unwrap();
+            let c_filename = CString::new(filename).unwrap();
             let raw = image::IMG_Load(c_filename.as_ptr() as *const _);
             if (raw as *mut ()).is_null() {
                 Err(get_error())
@@ -104,10 +106,10 @@ impl<'a> LoadSurface for Surface<'a> {
 }
 
 impl<'a> SaveSurface for Surface<'a> {
-    fn save<P: AsRef<Path>>(&self, filename: P) -> Result<(), String> {
+    fn save(&self, filename: &str) -> Result<(), String> {
         //! Saves an SDL Surface to a file
         unsafe {
-            let c_filename = CString::new(filename.as_ref().to_str().unwrap()).unwrap();
+            let c_filename = CString::new(filename).unwrap();
             let status = image::IMG_SavePNG(self.raw(), c_filename.as_ptr() as *const _);
             if status != 0 {
                 Err(get_error())
@@ -133,15 +135,15 @@ impl<'a> SaveSurface for Surface<'a> {
 
 /// Method extensions for creating Textures from a `TextureCreator`
 pub trait LoadTexture {
-    fn load_texture<P: AsRef<Path>>(&self, filename: P) -> Result<Texture, String>;
+    fn load_texture(&self, filename: &str) -> Result<Texture, String>;
     fn load_texture_bytes(&self, buf: &[u8]) -> Result<Texture, String>;
 }
 
 impl<T> LoadTexture for TextureCreator<T> {
-    fn load_texture<P: AsRef<Path>>(&self, filename: P) -> Result<Texture, String> {
+    fn load_texture(&self, filename: &str) -> Result<Texture, String> {
         //! Loads an SDL Texture from a file
         unsafe {
-            let c_filename = CString::new(filename.as_ref().to_str().unwrap()).unwrap();
+            let c_filename = CString::new(filename).unwrap();
             let raw = image::IMG_LoadTexture(self.raw(), c_filename.as_ptr() as *const _);
             if (raw as *mut ()).is_null() {
                 Err(get_error())

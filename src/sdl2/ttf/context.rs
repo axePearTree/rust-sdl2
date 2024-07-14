@@ -1,10 +1,7 @@
+use alloc::string::String;
+use core::{ffi::{c_int, c_long}, fmt};
 use get_error;
 use rwops::RWops;
-use std::error;
-use std::fmt;
-use std::io;
-use std::os::raw::{c_int, c_long};
-use std::path::Path;
 use sys::ttf;
 use version::Version;
 
@@ -27,19 +24,15 @@ impl Drop for Sdl2TtfContext {
 
 impl Sdl2TtfContext {
     /// Loads a font from the given file with the given size in points.
-    pub fn load_font<P: AsRef<Path>>(
-        &self,
-        path: P,
-        point_size: u16,
-    ) -> Result<Font<'_, 'static>, String> {
+    pub fn load_font(&self, path: &str, point_size: u16) -> Result<Font<'_, 'static>, String> {
         internal_load_font(path, point_size)
     }
 
     /// Loads the font at the given index of the file, with the given
     /// size in points.
-    pub fn load_font_at_index<P: AsRef<Path>>(
+    pub fn load_font_at_index(
         &self,
-        path: P,
+        path: &str,
         index: u32,
         point_size: u16,
     ) -> Result<Font<'_, 'static>, String> {
@@ -89,17 +82,8 @@ pub fn get_linked_version() -> Version {
 /// Necessary for context management, unless we find a way to have a singleton
 #[derive(Debug)]
 pub enum InitError {
-    InitializationError(io::Error),
+    InitializationError,
     AlreadyInitializedError,
-}
-
-impl error::Error for InitError {
-    fn source(&self) -> Option<&(dyn error::Error + 'static)> {
-        match *self {
-            InitError::AlreadyInitializedError => None,
-            InitError::InitializationError(ref error) => Some(error),
-        }
-    }
 }
 
 impl fmt::Display for InitError {
@@ -108,7 +92,7 @@ impl fmt::Display for InitError {
             Self::AlreadyInitializedError => {
                 write!(f, "SDL2_TTF has already been initialized")
             }
-            Self::InitializationError(error) => write!(f, "SDL2_TTF initialization error: {error}"),
+            Self::InitializationError => write!(f, "SDL2_TTF initialization error."),
         }
     }
 }
@@ -122,7 +106,7 @@ pub fn init() -> Result<Sdl2TtfContext, InitError> {
         } else if ttf::TTF_Init() == 0 {
             Ok(Sdl2TtfContext)
         } else {
-            Err(InitError::InitializationError(io::Error::last_os_error()))
+            Err(InitError::InitializationError)
         }
     }
 }

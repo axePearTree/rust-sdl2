@@ -2,9 +2,10 @@
 
 use get_error;
 use libc::c_int;
-pub use std::f64::consts::PI;
+pub use core::f64::consts::PI;
 use surface::Surface;
 use sys::gfx::rotozoom;
+use alloc::string::String;
 
 /// `RotozoomSurface` for work with rust-sdl2 Surface type
 pub trait RotozoomSurface {

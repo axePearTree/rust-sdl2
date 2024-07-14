@@ -5,10 +5,11 @@ use libc::c_void;
 use libc::{c_char, c_int};
 use pixels;
 use render::Canvas;
-use std::convert::TryFrom;
-use std::ffi::CString;
-use std::mem;
-use std::ptr;
+use core::convert::TryFrom;
+use alloc::ffi::CString;
+use alloc::string::String;
+use core::mem;
+use core::ptr;
 use surface::Surface;
 use sys::gfx::primitives;
 

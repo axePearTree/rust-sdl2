@@ -1,7 +1,7 @@
 use crate::get_error;
 use alloc::string::String;
 use libc::c_void;
-use libc::{c_char, c_int, size_t};
+use libc::{c_char, c_int};
 use alloc::ffi::CString;
 use core::marker::PhantomData;
 
