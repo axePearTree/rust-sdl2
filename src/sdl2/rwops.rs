@@ -1,8 +1,8 @@
-use alloc::string::String;
 use crate::get_error;
-use libc::c_void;
+use alloc::string::String;
 use core::ffi::c_int;
 use core::marker::PhantomData;
+use libc::c_void;
 
 #[cfg(feature = "std")]
 use std::io;

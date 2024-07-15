@@ -91,7 +91,7 @@ impl Sdl {
         }
 
         if cfg!(not(feature = "std")) && SDL_COUNT.load(Ordering::Relaxed) > 0 {
-            return Err(String::from("SDL already initialized."))
+            return Err(String::from("SDL already initialized."));
         }
 
         // Initialize SDL.

@@ -4,8 +4,8 @@
 use alloc::ffi::{CString, NulError};
 use alloc::string::String;
 use alloc::vec::Vec;
-use core::fmt;
 use core::ffi::{c_char, c_int};
+use core::fmt;
 use core::ptr;
 
 #[cfg(feature = "std")]

@@ -39,9 +39,9 @@ use crate::rect::Rect;
 use crate::surface;
 use crate::surface::{Surface, SurfaceContext, SurfaceRef};
 use crate::video::{Window, WindowContext};
+use alloc::rc::Rc;
+use alloc::string::String;
 use alloc::vec::Vec;
-use libc::c_void;
-use libc::{c_double, c_int};
 use core::convert::TryFrom;
 use core::ffi::CStr;
 use core::fmt;
@@ -51,8 +51,8 @@ use core::mem;
 use core::mem::{transmute, MaybeUninit};
 use core::ops::Deref;
 use core::ptr;
-use alloc::rc::Rc;
-use alloc::string::String;
+use libc::c_void;
+use libc::{c_double, c_int};
 
 #[cfg(feature = "std")]
 use std::error::Error;

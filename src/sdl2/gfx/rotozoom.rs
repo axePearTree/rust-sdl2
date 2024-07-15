@@ -1,9 +1,9 @@
 //! Surface Rotozoomer
 
-use get_error;
-use libc::c_int;
 use alloc::string::String;
 pub use core::f64::consts::PI;
+use get_error;
+use libc::c_int;
 use surface::Surface;
 use sys::gfx::rotozoom;
 

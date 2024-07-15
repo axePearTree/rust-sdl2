@@ -1,3 +1,4 @@
+use super::font::{internal_load_font_from_ll, Font};
 use alloc::string::String;
 use core::ffi::{c_int, c_long};
 use core::fmt;
@@ -5,7 +6,6 @@ use get_error;
 use rwops::RWops;
 use sys::ttf;
 use version::Version;
-use super::font::{internal_load_font_from_ll, Font};
 
 #[cfg(feature = "std")]
 use std::{error, io, path::Path};

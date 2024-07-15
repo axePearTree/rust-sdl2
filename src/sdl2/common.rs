@@ -1,5 +1,5 @@
-use core::fmt;
 use alloc::string::String;
+use core::fmt;
 
 /// A given integer was so big that its representation as a C integer would be
 /// negative.

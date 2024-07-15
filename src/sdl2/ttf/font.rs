@@ -1,15 +1,15 @@
 // 0 should not be used in bitflags, but here it is. Removing it will break existing code.
 #![allow(clippy::bad_bit_mask)]
 
+use alloc::ffi::{CString, NulError};
+use alloc::string::String;
+use core::ffi::CStr;
+use core::ffi::{c_int, c_uint};
+use core::fmt;
+use core::marker::PhantomData;
 use get_error;
 use pixels::Color;
 use rwops::RWops;
-use alloc::string::String;
-use alloc::ffi::{CString, NulError};
-use core::ffi::CStr;
-use core::fmt;
-use core::marker::PhantomData;
-use core::ffi::{c_int, c_uint};
 use surface::Surface;
 use sys::ttf;
 use sys::SDL_Surface;

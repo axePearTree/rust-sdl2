@@ -1,11 +1,11 @@
 use crate::get_error;
 use alloc::borrow::ToOwned;
-use libc::c_char;
-use libc::c_void;
-use core::ffi::CStr;
 use alloc::ffi::{CString, NulError};
 use alloc::string::String;
+use core::ffi::CStr;
 use core::fmt;
+use libc::c_char;
+use libc::c_void;
 
 #[cfg(feature = "std")]
 use std::error;

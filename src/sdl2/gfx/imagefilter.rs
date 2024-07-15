@@ -2,9 +2,9 @@
 
 use alloc::string::String;
 use c_vec::CVec;
+use core::mem;
 use get_error;
 use libc::{self, c_int, c_uint, c_void, size_t};
-use core::mem;
 use sys::gfx::imagefilter;
 
 /// MMX detection routine (with override flag).

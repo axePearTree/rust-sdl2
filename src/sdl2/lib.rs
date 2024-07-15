@@ -46,7 +46,6 @@
 //! ```
 
 #![no_std]
-
 #![crate_name = "sdl2"]
 #![crate_type = "lib"]
 

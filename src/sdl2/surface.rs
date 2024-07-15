@@ -1,9 +1,9 @@
-use core::marker::PhantomData;
-use core::mem;
-use core::ops::{Deref, DerefMut};
 use alloc::borrow::ToOwned;
 use alloc::rc::Rc;
 use alloc::string::String;
+use core::marker::PhantomData;
+use core::mem;
+use core::ops::{Deref, DerefMut};
 
 use crate::get_error;
 use crate::pixels;
@@ -11,10 +11,10 @@ use crate::rect::Rect;
 use crate::render::{BlendMode, Canvas};
 use crate::render::{Texture, TextureCreator, TextureValueError};
 use crate::rwops::RWops;
-use libc::c_int;
 use core::convert::TryFrom;
 use core::mem::transmute;
 use core::ptr;
+use libc::c_int;
 
 #[cfg(feature = "std")]
 use std::path::Path;

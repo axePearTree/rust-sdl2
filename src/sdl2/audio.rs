@@ -54,16 +54,16 @@
 
 use alloc::borrow::ToOwned;
 use alloc::boxed::Box;
-use libc::{c_char, c_int, c_void};
-use core::convert::TryFrom;
-use core::ffi::CStr;
 use alloc::ffi::CString;
 use alloc::string::String;
 use alloc::vec::Vec;
+use core::convert::TryFrom;
+use core::ffi::CStr;
 use core::marker::PhantomData;
 use core::mem;
 use core::ops::{Deref, DerefMut};
 use core::ptr;
+use libc::{c_char, c_int, c_void};
 
 #[cfg(feature = "std")]
 use std::path::Path;
@@ -1184,8 +1184,8 @@ mod test {
 
     #[test]
     fn test_audio_cvt() {
-        use core::iter::repeat;
         use alloc::vec::Vec;
+        use core::iter::repeat;
 
         // 0,1,2,3, ...
         let buffer: Vec<u8> = (0..255).collect();

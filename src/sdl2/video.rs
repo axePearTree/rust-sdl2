@@ -1,13 +1,13 @@
 use alloc::borrow::ToOwned;
-use alloc::string::String;
-use alloc::vec::Vec;
-use libc::{c_char, c_float, c_int, c_uint};
 use alloc::ffi::{CString, NulError};
 use alloc::rc::Rc;
+use alloc::string::String;
+use alloc::vec::Vec;
 use core::convert::TryFrom;
 use core::ffi::CStr;
 use core::ops::{Deref, DerefMut};
 use core::{fmt, mem, ptr};
+use libc::{c_char, c_float, c_int, c_uint};
 
 #[cfg(feature = "std")]
 use std::error::Error;
@@ -1504,7 +1504,10 @@ impl Window {
                 return Err(get_error());
             }
             let mut result = vec![0; size as usize];
-            result.copy_from_slice(core::slice::from_raw_parts(data as *const u8, size as usize));
+            result.copy_from_slice(core::slice::from_raw_parts(
+                data as *const u8,
+                size as usize,
+            ));
             sys::SDL_free(data);
             Ok(result)
         }

@@ -1,17 +1,17 @@
 use crate::rwops::RWops;
 use alloc::borrow::ToOwned;
-use libc::c_char;
 use alloc::ffi::{CString, NulError};
 use alloc::string::String;
 use core::ffi::CStr;
 use core::fmt;
+use libc::c_char;
 
+#[cfg(feature = "std")]
+use std::error;
 #[cfg(feature = "std")]
 use std::io;
 #[cfg(feature = "std")]
 use std::path::Path;
-#[cfg(feature = "std")]
-use std::error;
 
 #[cfg(feature = "hidapi")]
 use crate::sensor::SensorType;

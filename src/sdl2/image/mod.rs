@@ -20,12 +20,12 @@
 //! features = ["image"]
 //! ```
 
-use get_error;
-use render::{Texture, TextureCreator};
-use rwops::RWops;
 use alloc::ffi::CString;
 use alloc::string::String;
 use core::ffi::{c_char, c_int};
+use get_error;
+use render::{Texture, TextureCreator};
+use rwops::RWops;
 #[cfg(feature = "std")]
 use std::path::Path;
 use surface::Surface;

@@ -1,8 +1,8 @@
 use crate::sys;
 use alloc::boxed::Box;
-use libc::c_void;
 use core::marker::PhantomData;
 use core::mem;
+use libc::c_void;
 
 use crate::TimerSubsystem;
 

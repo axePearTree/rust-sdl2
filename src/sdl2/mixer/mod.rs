@@ -20,23 +20,23 @@
 //! features = ["mixer"]
 //! ```
 
-use alloc::boxed::Box;
-use audio::AudioFormatNum;
-use get_error;
-use libc::c_void;
-use libc::{c_double, c_int, c_uint};
-use rwops::RWops;
 use alloc::borrow::ToOwned;
+use alloc::boxed::Box;
 use alloc::ffi::CString;
 use alloc::string::{String, ToString};
+use audio::AudioFormatNum;
 use core::convert::TryInto;
 use core::default;
 use core::ffi::CStr;
 use core::fmt;
 use core::marker::PhantomData;
+use core::str::from_utf8;
+use get_error;
+use libc::c_void;
+use libc::{c_double, c_int, c_uint};
+use rwops::RWops;
 #[cfg(feature = "std")]
 use std::path::Path;
-use core::str::from_utf8;
 use sys;
 use sys::mixer;
 use version::Version;

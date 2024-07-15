@@ -1,7 +1,7 @@
 use crate::sys;
-use libc::c_char;
-use core::ffi::CStr;
 use alloc::{borrow::ToOwned, ffi::CString, string::String};
+use core::ffi::CStr;
+use libc::c_char;
 
 const VIDEO_MINIMIZE_ON_FOCUS_LOSS: &str = "SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS";
 
