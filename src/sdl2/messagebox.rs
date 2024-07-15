@@ -1,11 +1,15 @@
 // 0 should not be used in bitflags, but here it is. Removing it will break existing code.
 #![allow(clippy::bad_bit_mask)]
 
+use alloc::ffi::{CString, NulError};
+use alloc::string::String;
+use alloc::vec::Vec;
+use core::fmt;
+use core::ffi::{c_char, c_int};
+use core::ptr;
+
+#[cfg(feature = "std")]
 use std::error;
-use std::ffi::{CString, NulError};
-use std::fmt;
-use std::os::raw::{c_char, c_int};
-use std::ptr;
 
 use crate::get_error;
 use crate::video::Window;
@@ -127,6 +131,7 @@ impl fmt::Display for ShowMessageError {
     }
 }
 
+#[cfg(feature = "std")]
 impl error::Error for ShowMessageError {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match self {

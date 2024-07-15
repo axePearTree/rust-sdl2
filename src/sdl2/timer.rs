@@ -1,7 +1,8 @@
 use crate::sys;
+use alloc::boxed::Box;
 use libc::c_void;
-use std::marker::PhantomData;
-use std::mem;
+use core::marker::PhantomData;
+use core::mem;
 
 use crate::TimerSubsystem;
 
@@ -130,10 +131,13 @@ extern "C" fn c_timer_callback(_interval: u32, param: *mut c_void) -> u32 {
 }
 
 #[cfg(not(target_os = "macos"))]
+#[cfg(feature = "std")]
 #[cfg(test)]
 mod test {
     use std::sync::{Arc, Mutex};
     use std::time::Duration;
+
+    use alloc::boxed::Box;
 
     #[test]
     fn test_timer() {

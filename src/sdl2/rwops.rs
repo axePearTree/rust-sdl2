@@ -1,10 +1,18 @@
+use alloc::string::String;
 use crate::get_error;
 use libc::c_void;
-use libc::{c_char, c_int, size_t};
-use std::ffi::CString;
+use core::ffi::c_int;
+use core::marker::PhantomData;
+
+#[cfg(feature = "std")]
 use std::io;
-use std::marker::PhantomData;
+
+#[cfg(feature = "std")]
 use std::path::Path;
+
+// Vec is only used in methods that require std::io.
+#[cfg(feature = "std")]
+use alloc::vec::Vec;
 
 use crate::sys;
 
@@ -31,7 +39,11 @@ impl<'a> RWops<'a> {
 
     /// Creates an SDL file stream.
     #[doc(alias = "SDL_RWFromFile")]
+    #[cfg(feature = "std")]
     pub fn from_file<P: AsRef<Path>>(path: P, mode: &str) -> Result<RWops<'static>, String> {
+        use alloc::ffi::CString;
+        use libc::c_char;
+
         let raw = unsafe {
             let path_c = CString::new(path.as_ref().to_str().unwrap()).unwrap();
             let mode_c = CString::new(mode).unwrap();
@@ -73,6 +85,7 @@ impl<'a> RWops<'a> {
     ///
     /// The buffer must be provided to this function and must live as long as the
     /// `RWops`, but the `RWops` does not take ownership of it.
+    #[cfg(feature = "std")]
     pub fn from_read<T>(r: &mut T, buffer: &'a mut Vec<u8>) -> Result<RWops<'a>, String>
     where
         T: io::Read + Sized,
@@ -134,8 +147,11 @@ impl<'a> Drop for RWops<'a> {
     }
 }
 
+#[cfg(feature = "std")]
 impl<'a> io::Read for RWops<'a> {
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
+        use libc::size_t;
+
         let out_len = buf.len() as size_t;
         // FIXME: it's better to use as_mut_ptr().
         // number of objects read, or 0 at error or end of file.
@@ -151,8 +167,11 @@ impl<'a> io::Read for RWops<'a> {
     }
 }
 
+#[cfg(feature = "std")]
 impl<'a> io::Write for RWops<'a> {
     fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
+        use libc::size_t;
+
         let in_len = buf.len() as size_t;
         let ret = unsafe {
             ((*self.raw).write.unwrap())(
@@ -170,6 +189,7 @@ impl<'a> io::Write for RWops<'a> {
     }
 }
 
+#[cfg(feature = "std")]
 impl<'a> io::Seek for RWops<'a> {
     fn seek(&mut self, pos: io::SeekFrom) -> io::Result<u64> {
         // whence code is different from SeekStyle

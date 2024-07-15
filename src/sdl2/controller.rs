@@ -1,10 +1,17 @@
 use crate::rwops::RWops;
+use alloc::borrow::ToOwned;
 use libc::c_char;
-use std::error;
-use std::ffi::{CStr, CString, NulError};
-use std::fmt;
+use alloc::ffi::{CString, NulError};
+use alloc::string::String;
+use core::ffi::CStr;
+use core::fmt;
+
+#[cfg(feature = "std")]
 use std::io;
+#[cfg(feature = "std")]
 use std::path::Path;
+#[cfg(feature = "std")]
+use std::error;
 
 #[cfg(feature = "hidapi")]
 use crate::sensor::SensorType;
@@ -15,7 +22,7 @@ use crate::common::{validate_int, IntegerOrSdlError};
 use crate::get_error;
 use crate::joystick;
 use crate::GameControllerSubsystem;
-use std::mem::transmute;
+use core::mem::transmute;
 
 use crate::sys;
 
@@ -40,7 +47,8 @@ impl fmt::Display for AddMappingError {
     }
 }
 
-impl error::Error for AddMappingError {
+#[cfg(feature = "std")]
+impl ::std::error::Error for AddMappingError {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match self {
             Self::InvalidMapping(err) => Some(err),
@@ -145,6 +153,7 @@ impl GameControllerSubsystem {
     }
 
     /// Load controller input mappings from a file.
+    #[cfg(feature = "std")]
     pub fn load_mappings<P: AsRef<Path>>(&self, path: P) -> Result<i32, AddMappingError> {
         use self::AddMappingError::*;
 
@@ -153,11 +162,13 @@ impl GameControllerSubsystem {
     }
 
     /// Load controller input mappings from a [`Read`](std::io::Read) object.
+    #[cfg(feature = "std")]
     pub fn load_mappings_from_read<R: io::Read>(
         &self,
         read: &mut R,
     ) -> Result<i32, AddMappingError> {
         use self::AddMappingError::*;
+        use alloc::vec::Vec;
 
         let mut buffer = Vec::with_capacity(1024);
         let rw = RWops::from_read(read, &mut buffer).map_err(ReadError)?;

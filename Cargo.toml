@@ -17,8 +17,10 @@ path = "src/sdl2/lib.rs"
 
 [dependencies]
 bitflags = "1.2.1"
-libc = "0.2.92"
+libc = { version = "0.2.92", default-features = false }
 lazy_static = "1.4.0"
+spin = "0.9.8"
+hashbrown = "0.14.5"
 
 [dependencies.sdl2-sys]
 path = "sdl2-sys"
@@ -41,7 +43,8 @@ optional = true
 
 [features]
 unsafe_textures = []
-default = []
+default = ["std"]
+std = []
 gfx = ["c_vec", "sdl2-sys/gfx"]
 mixer = ["sdl2-sys/mixer"]
 image = ["sdl2-sys/image"]

@@ -1,8 +1,10 @@
 use crate::get_error;
+use alloc::borrow::ToOwned;
 use libc::c_char;
 use libc::c_void;
-use std::ffi::{CStr, CString};
-
+use core::ffi::CStr;
+use alloc::ffi::CString;
+use alloc::string::String;
 use crate::sys;
 
 /// Clipboard utility functions. Access with `VideoSubsystem::clipboard()`.

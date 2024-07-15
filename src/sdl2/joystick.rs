@@ -6,8 +6,10 @@ use crate::common::{validate_int, IntegerOrSdlError};
 use crate::get_error;
 use crate::JoystickSubsystem;
 use libc::c_char;
-use std::ffi::{CStr, CString, NulError};
-use std::fmt::{Display, Error, Formatter};
+use alloc::ffi::{CString, NulError};
+use alloc::string::{String, ToString};
+use core::ffi::CStr;
+use core::fmt::{Display, Error, Formatter};
 
 impl JoystickSubsystem {
     /// Retrieve the total number of attached joysticks *and* controllers identified by SDL.

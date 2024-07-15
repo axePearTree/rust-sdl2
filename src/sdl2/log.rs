@@ -1,6 +1,8 @@
+use alloc::ffi::CString;
+
 use crate::sys;
-use std::ffi::{CStr, CString};
-use std::ptr::null_mut;
+use core::ffi::CStr;
+use core::ptr::null_mut;
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum Category {

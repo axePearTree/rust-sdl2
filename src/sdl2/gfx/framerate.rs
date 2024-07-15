@@ -3,8 +3,9 @@
 use get_error;
 use libc;
 use libc::{c_void, size_t};
-use std::mem;
+use core::mem;
 use sys::gfx;
+use alloc::string::String;
 
 /// Structure holding the state and timing information of the framerate controller.
 pub struct FPSManager {

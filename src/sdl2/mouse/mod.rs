@@ -1,9 +1,10 @@
+use alloc::string::String;
 use crate::get_error;
 use crate::surface::SurfaceRef;
 use crate::video;
 use crate::EventPump;
-use std::iter::FilterMap;
-use std::mem::transmute;
+use core::iter::FilterMap;
+use core::mem::transmute;
 
 use crate::sys;
 use crate::sys::SDL_SystemCursor;

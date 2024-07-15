@@ -1,9 +1,14 @@
 use crate::get_error;
+use alloc::borrow::ToOwned;
 use libc::c_char;
 use libc::c_void;
+use core::ffi::CStr;
+use alloc::ffi::{CString, NulError};
+use alloc::string::String;
+use core::fmt;
+
+#[cfg(feature = "std")]
 use std::error;
-use std::ffi::{CStr, CString, NulError};
-use std::fmt;
 
 use crate::sys;
 
@@ -42,6 +47,7 @@ impl fmt::Display for PrefPathError {
     }
 }
 
+#[cfg(feature = "std")]
 impl error::Error for PrefPathError {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match self {

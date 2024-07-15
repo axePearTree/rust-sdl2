@@ -1,8 +1,9 @@
-use std::marker::PhantomData;
-use std::mem;
-use std::ops::{Deref, DerefMut};
-use std::path::Path;
-use std::rc::Rc;
+use core::marker::PhantomData;
+use core::mem;
+use core::ops::{Deref, DerefMut};
+use alloc::borrow::ToOwned;
+use alloc::rc::Rc;
+use alloc::string::String;
 
 use crate::get_error;
 use crate::pixels;
@@ -11,9 +12,12 @@ use crate::render::{BlendMode, Canvas};
 use crate::render::{Texture, TextureCreator, TextureValueError};
 use crate::rwops::RWops;
 use libc::c_int;
-use std::convert::TryFrom;
-use std::mem::transmute;
-use std::ptr;
+use core::convert::TryFrom;
+use core::mem::transmute;
+use core::ptr;
+
+#[cfg(feature = "std")]
+use std::path::Path;
 
 use crate::sys;
 
@@ -66,7 +70,7 @@ impl AsRef<SurfaceRef> for SurfaceRef {
 #[test]
 fn test_surface_ref_size() {
     // `SurfaceRef` must be 0 bytes.
-    assert_eq!(::std::mem::size_of::<SurfaceRef>(), 0);
+    assert_eq!(::core::mem::size_of::<SurfaceRef>(), 0);
 }
 
 impl<'a> Deref for Surface<'a> {
@@ -295,6 +299,7 @@ impl<'a> Surface<'a> {
         }
     }
 
+    #[cfg(feature = "std")]
     pub fn load_bmp<P: AsRef<Path>>(path: P) -> Result<Surface<'static>, String> {
         let mut file = RWops::from_file(path, "rb")?;
         Surface::load_bmp_rw(&mut file)
@@ -380,7 +385,7 @@ impl SurfaceRef {
 
             let raw_pixels = self.raw_ref().pixels as *const u8;
             let len = self.raw_ref().pitch as usize * (self.raw_ref().h as usize);
-            let pixels = ::std::slice::from_raw_parts(raw_pixels, len);
+            let pixels = ::core::slice::from_raw_parts(raw_pixels, len);
             let rv = f(pixels);
             sys::SDL_UnlockSurface(self.raw());
             rv
@@ -397,7 +402,7 @@ impl SurfaceRef {
 
             let raw_pixels = self.raw_ref().pixels as *mut u8;
             let len = self.raw_ref().pitch as usize * (self.raw_ref().h as usize);
-            let pixels = ::std::slice::from_raw_parts_mut(raw_pixels, len);
+            let pixels = ::core::slice::from_raw_parts_mut(raw_pixels, len);
             let rv = f(pixels);
             sys::SDL_UnlockSurface(self.raw());
             rv
@@ -414,7 +419,7 @@ impl SurfaceRef {
                 let raw_pixels = self.raw_ref().pixels as *const u8;
                 let len = self.raw_ref().pitch as usize * (self.raw_ref().h as usize);
 
-                Some(::std::slice::from_raw_parts(raw_pixels, len))
+                Some(::core::slice::from_raw_parts(raw_pixels, len))
             }
         }
     }
@@ -429,7 +434,7 @@ impl SurfaceRef {
                 let raw_pixels = self.raw_ref().pixels as *mut u8;
                 let len = self.raw_ref().pitch as usize * (self.raw_ref().h as usize);
 
-                Some(::std::slice::from_raw_parts_mut(raw_pixels, len))
+                Some(::core::slice::from_raw_parts_mut(raw_pixels, len))
             }
         }
     }
@@ -450,6 +455,7 @@ impl SurfaceRef {
         }
     }
 
+    #[cfg(feature = "std")]
     pub fn save_bmp<P: AsRef<Path>>(&self, path: P) -> Result<(), String> {
         let mut file = RWops::from_file(path, "wb")?;
         self.save_bmp_rw(&mut file)

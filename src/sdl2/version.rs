@@ -1,7 +1,10 @@
 //! Querying SDL Version
 
-use std::ffi::CStr;
-use std::fmt;
+use core::ffi::CStr;
+use core::fmt;
+
+use alloc::borrow::ToOwned;
+use alloc::string::String;
 
 use crate::sys;
 
