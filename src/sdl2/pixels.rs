@@ -1,6 +1,9 @@
+use alloc::string::String;
+use alloc::vec::Vec;
+
 use crate::sys;
-use std::convert::TryFrom;
-use std::mem::transmute;
+use core::convert::TryFrom;
+use core::mem::transmute;
 
 use crate::get_error;
 

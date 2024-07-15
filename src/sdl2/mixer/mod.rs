@@ -20,19 +20,23 @@
 //! features = ["mixer"]
 //! ```
 
+use alloc::borrow::ToOwned;
+use alloc::boxed::Box;
+use alloc::ffi::CString;
+use alloc::string::{String, ToString};
 use audio::AudioFormatNum;
+use core::convert::TryInto;
+use core::default;
+use core::ffi::CStr;
+use core::fmt;
+use core::marker::PhantomData;
+use core::str::from_utf8;
 use get_error;
 use libc::c_void;
 use libc::{c_double, c_int, c_uint};
 use rwops::RWops;
-use std::borrow::ToOwned;
-use std::convert::TryInto;
-use std::default;
-use std::ffi::{CStr, CString};
-use std::fmt;
-use std::marker::PhantomData;
+#[cfg(feature = "std")]
 use std::path::Path;
-use std::str::from_utf8;
 use sys;
 use sys::mixer;
 use version::Version;
@@ -234,6 +238,7 @@ impl Drop for Chunk {
 
 impl Chunk {
     /// Load file for use as a sample.
+    #[cfg(feature = "std")]
     pub fn from_file<P: AsRef<Path>>(path: P) -> Result<Chunk, String> {
         let raw = unsafe { mixer::Mix_LoadWAV_RW(RWops::from_file(path, "rb")?.raw(), 0) };
         Self::from_owned_raw(raw)
@@ -245,7 +250,7 @@ impl Chunk {
     /// It's your responsibility to provide the audio data in the right format, as no conversion
     /// will take place when using this method.
     pub fn from_raw_buffer<T: AudioFormatNum>(buffer: Box<[T]>) -> Result<Chunk, String> {
-        let len: u32 = std::mem::size_of_val(&*buffer).try_into().unwrap();
+        let len: u32 = core::mem::size_of_val(&*buffer).try_into().unwrap();
         let raw = unsafe { mixer::Mix_QuickLoad_RAW(Box::into_raw(buffer) as *mut u8, len) };
         Self::from_owned_raw(raw)
     }
@@ -753,6 +758,7 @@ impl<'a> fmt::Debug for Music<'a> {
 
 impl<'a> Music<'a> {
     /// Load music file to use.
+    #[cfg(feature = "std")]
     pub fn from_file<P: AsRef<Path>>(path: P) -> Result<Music<'static>, String> {
         let raw = unsafe {
             let c_path = CString::new(path.as_ref().to_str().unwrap()).unwrap();

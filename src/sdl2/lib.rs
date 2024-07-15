@@ -45,10 +45,22 @@
 //! }
 //! ```
 
+#![no_std]
 #![crate_name = "sdl2"]
 #![crate_type = "lib"]
 
+#[cfg(feature = "std")]
+#[macro_use]
+extern crate std;
+
+#[macro_use]
+extern crate alloc;
+
 pub extern crate libc;
+
+extern crate spin;
+
+extern crate hashbrown;
 
 #[macro_use]
 extern crate lazy_static;

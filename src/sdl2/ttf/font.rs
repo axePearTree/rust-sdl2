@@ -1,19 +1,24 @@
 // 0 should not be used in bitflags, but here it is. Removing it will break existing code.
 #![allow(clippy::bad_bit_mask)]
 
+use alloc::ffi::{CString, NulError};
+use alloc::string::String;
+use core::ffi::CStr;
+use core::ffi::{c_int, c_uint};
+use core::fmt;
+use core::marker::PhantomData;
 use get_error;
 use pixels::Color;
 use rwops::RWops;
-use std::error;
-use std::ffi::NulError;
-use std::ffi::{CStr, CString};
-use std::fmt;
-use std::marker::PhantomData;
-use std::os::raw::{c_int, c_long, c_uint};
-use std::path::Path;
 use surface::Surface;
 use sys::ttf;
 use sys::SDL_Surface;
+
+#[cfg(feature = "std")]
+use std::path::Path;
+
+#[cfg(feature = "std")]
+use std::error;
 
 bitflags! {
     /// The styling of a font.
@@ -59,6 +64,7 @@ pub enum FontError {
     SdlError(String),
 }
 
+#[cfg(feature = "std")]
 impl error::Error for FontError {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match *self {
@@ -251,6 +257,7 @@ impl<'ttf, 'r> Drop for Font<'ttf, 'r> {
 }
 
 /// Internally used to load a font (for internal visibility).
+#[cfg(feature = "std")]
 pub fn internal_load_font<'ttf, P: AsRef<Path>>(
     path: P,
     ptsize: u16,
@@ -283,11 +290,13 @@ where
 }
 
 /// Internally used to load a font (for internal visibility).
+#[cfg(feature = "std")]
 pub fn internal_load_font_at_index<'ttf, P: AsRef<Path>>(
     path: P,
     index: u32,
     ptsize: u16,
 ) -> Result<Font<'ttf, 'static>, String> {
+    use core::ffi::c_long;
     unsafe {
         let cstring = CString::new(path.as_ref().to_str().unwrap().as_bytes()).unwrap();
         let raw = ttf::TTF_OpenFontIndex(cstring.as_ptr(), ptsize as c_int, index as c_long);

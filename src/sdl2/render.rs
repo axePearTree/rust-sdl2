@@ -39,19 +39,23 @@ use crate::rect::Rect;
 use crate::surface;
 use crate::surface::{Surface, SurfaceContext, SurfaceRef};
 use crate::video::{Window, WindowContext};
+use alloc::rc::Rc;
+use alloc::string::String;
+use alloc::vec::Vec;
+use core::convert::TryFrom;
+use core::ffi::CStr;
+use core::fmt;
+#[cfg(not(feature = "unsafe_textures"))]
+use core::marker::PhantomData;
+use core::mem;
+use core::mem::{transmute, MaybeUninit};
+use core::ops::Deref;
+use core::ptr;
 use libc::c_void;
 use libc::{c_double, c_int};
-use std::convert::TryFrom;
+
+#[cfg(feature = "std")]
 use std::error::Error;
-use std::ffi::CStr;
-use std::fmt;
-#[cfg(not(feature = "unsafe_textures"))]
-use std::marker::PhantomData;
-use std::mem;
-use std::mem::{transmute, MaybeUninit};
-use std::ops::Deref;
-use std::ptr;
-use std::rc::Rc;
 
 use crate::sys;
 use crate::sys::SDL_BlendMode;
@@ -74,6 +78,7 @@ impl fmt::Display for SdlError {
     }
 }
 
+#[cfg(feature = "std")]
 impl Error for SdlError {}
 
 impl fmt::Display for TargetRenderError {
@@ -86,6 +91,7 @@ impl fmt::Display for TargetRenderError {
     }
 }
 
+#[cfg(feature = "std")]
 impl Error for TargetRenderError {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         match self {
@@ -771,6 +777,7 @@ impl fmt::Display for TextureValueError {
     }
 }
 
+#[cfg(feature = "std")]
 impl Error for TextureValueError {}
 
 #[doc(alias = "SDL_CreateTexture")]
@@ -1985,6 +1992,7 @@ impl fmt::Display for UpdateTextureError {
     }
 }
 
+#[cfg(feature = "std")]
 impl Error for UpdateTextureError {}
 
 #[derive(Debug, Clone)]
@@ -2045,6 +2053,7 @@ impl fmt::Display for UpdateTextureYUVError {
     }
 }
 
+#[cfg(feature = "std")]
 impl Error for UpdateTextureYUVError {}
 
 struct InternalTexture {
@@ -2360,7 +2369,7 @@ impl InternalTexture {
                     .format
                     .byte_size_from_pitch_and_height(pitch as usize, height);
                 Ok((
-                    ::std::slice::from_raw_parts_mut(pixels as *mut u8, size),
+                    ::core::slice::from_raw_parts_mut(pixels as *mut u8, size),
                     pitch,
                 ))
             } else {
@@ -2787,7 +2796,7 @@ impl Iterator for DriverIterator {
 
     #[inline]
     fn nth(&mut self, n: usize) -> Option<RendererInfo> {
-        use std::convert::TryInto;
+        use core::convert::TryInto;
 
         self.index = match n.try_into().ok().and_then(|n| self.index.checked_add(n)) {
             Some(index) if index < self.length => index,
@@ -2812,7 +2821,7 @@ impl DoubleEndedIterator for DriverIterator {
 
     #[inline]
     fn nth_back(&mut self, n: usize) -> Option<RendererInfo> {
-        use std::convert::TryInto;
+        use core::convert::TryInto;
 
         self.length = match n.try_into().ok().and_then(|n| self.length.checked_sub(n)) {
             Some(length) if length > self.index => length,
@@ -2825,7 +2834,7 @@ impl DoubleEndedIterator for DriverIterator {
 
 impl ExactSizeIterator for DriverIterator {}
 
-impl std::iter::FusedIterator for DriverIterator {}
+impl core::iter::FusedIterator for DriverIterator {}
 
 /// Gets an iterator of all render drivers compiled into the SDL2 library.
 #[inline]

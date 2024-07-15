@@ -1,5 +1,5 @@
-use std::error::Error;
-use std::fmt;
+use alloc::string::String;
+use core::fmt;
 
 /// A given integer was so big that its representation as a C integer would be
 /// negative.
@@ -36,4 +36,5 @@ impl fmt::Display for IntegerOrSdlError {
     }
 }
 
-impl Error for IntegerOrSdlError {}
+#[cfg(feature = "std")]
+impl ::std::error::Error for IntegerOrSdlError {}

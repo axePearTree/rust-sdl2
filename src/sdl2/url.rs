@@ -1,12 +1,16 @@
 //! Opening URLs in default system handlers
 
-use std::error;
-use std::ffi::{CString, NulError};
-use std::fmt;
+use alloc::ffi::{CString, NulError};
+use core::fmt;
+
+use alloc::string::String;
 
 use crate::get_error;
 
 use crate::sys;
+
+#[cfg(feature = "std")]
+use std::error;
 
 #[derive(Debug, Clone)]
 pub enum OpenUrlError {
@@ -25,6 +29,7 @@ impl fmt::Display for OpenUrlError {
     }
 }
 
+#[cfg(feature = "std")]
 impl error::Error for OpenUrlError {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match self {

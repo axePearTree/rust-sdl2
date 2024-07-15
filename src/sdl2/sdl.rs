@@ -1,11 +1,15 @@
+use alloc::borrow::ToOwned;
+use alloc::ffi::{CString, NulError};
+use alloc::string::String;
+use core::ffi::CStr;
+use core::fmt;
+use core::marker::PhantomData;
+use core::mem::transmute;
+use core::sync::atomic::{AtomicBool, AtomicU32, Ordering};
 use libc::c_char;
-use std::cell::Cell;
-use std::error;
-use std::ffi::{CStr, CString, NulError};
-use std::fmt;
-use std::marker::PhantomData;
-use std::mem::transmute;
-use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
+
+#[cfg(feature = "std")]
+use core::cell::Cell;
 
 use crate::sys;
 
@@ -33,15 +37,18 @@ impl fmt::Display for Error {
     }
 }
 
-impl error::Error for Error {}
+#[cfg(feature = "std")]
+impl std::error::Error for Error {}
 
 /// True if the main thread has been declared. The main thread is declared when
 /// SDL is first initialized.
+#[cfg(feature = "std")]
 static IS_MAIN_THREAD_DECLARED: AtomicBool = AtomicBool::new(false);
 
 /// Number of active `SdlDrop` objects keeping SDL alive.
 static SDL_COUNT: AtomicU32 = AtomicU32::new(0);
 
+#[cfg(feature = "std")]
 thread_local! {
     /// True if the current thread is the main thread.
     static IS_MAIN_THREAD: Cell<bool> = const { Cell::new(false) };
@@ -68,19 +75,26 @@ impl Sdl {
     #[inline]
     #[doc(alias = "SDL_Init")]
     fn new() -> Result<Sdl, String> {
-        // Check if we can safely initialize SDL on this thread.
-        let was_main_thread_declared = IS_MAIN_THREAD_DECLARED.swap(true, Ordering::SeqCst);
+        #[cfg(feature = "std")]
+        {
+            // Check if we can safely initialize SDL on this thread.
+            let was_main_thread_declared = IS_MAIN_THREAD_DECLARED.swap(true, Ordering::SeqCst);
 
-        IS_MAIN_THREAD.with(|is_main_thread| {
-            if was_main_thread_declared {
-                if !is_main_thread.get() {
-                    return Err("Cannot initialize `Sdl` from more than one thread.".to_owned());
+            IS_MAIN_THREAD.with(|is_main_thread| {
+                if was_main_thread_declared {
+                    if !is_main_thread.get() {
+                        return Err("Cannot initialize `Sdl` from more than one thread.".to_owned());
+                    }
+                } else {
+                    is_main_thread.set(true);
                 }
-            } else {
-                is_main_thread.set(true);
-            }
-            Ok(())
-        })?;
+                Ok(())
+            })?;
+        }
+
+        if cfg!(not(feature = "std")) && SDL_COUNT.load(Ordering::Relaxed) > 0 {
+            return Err(String::from("SDL already initialized."));
+        }
 
         // Initialize SDL.
         if SDL_COUNT.fetch_add(1, Ordering::Relaxed) == 0 {
@@ -197,6 +211,7 @@ impl Drop for SdlDrop {
             unsafe {
                 sys::SDL_Quit();
             }
+            #[cfg(feature = "std")]
             IS_MAIN_THREAD_DECLARED.store(false, Ordering::SeqCst);
         }
     }

@@ -1,10 +1,16 @@
+use alloc::borrow::ToOwned;
+use alloc::ffi::{CString, NulError};
+use alloc::rc::Rc;
+use alloc::string::String;
+use alloc::vec::Vec;
+use core::convert::TryFrom;
+use core::ffi::CStr;
+use core::ops::{Deref, DerefMut};
+use core::{fmt, mem, ptr};
 use libc::{c_char, c_float, c_int, c_uint};
-use std::convert::TryFrom;
+
+#[cfg(feature = "std")]
 use std::error::Error;
-use std::ffi::{CStr, CString, NulError};
-use std::ops::{Deref, DerefMut};
-use std::rc::Rc;
-use std::{fmt, mem, ptr};
 
 use crate::common::{validate_int, IntegerOrSdlError};
 use crate::pixels::PixelFormatEnum;
@@ -203,7 +209,7 @@ pub mod gl_attr {
     use super::{GLAttrTypeUtil, GLProfile};
     use crate::get_error;
     use crate::sys;
-    use std::marker::PhantomData;
+    use core::marker::PhantomData;
 
     /// OpenGL context getters and setters. Obtain with `VideoSubsystem::gl_attr()`.
     pub struct GLAttr<'a> {
@@ -715,7 +721,7 @@ impl VideoSubsystem {
 
     #[doc(alias = "SDL_GetCurrentVideoDriver")]
     pub fn current_video_driver(&self) -> &'static str {
-        use std::str;
+        use core::str;
 
         unsafe {
             let buf = sys::SDL_GetCurrentVideoDriver();
@@ -917,6 +923,7 @@ impl VideoSubsystem {
     /// If no OpenGL library is loaded, the default library will be loaded upon creation of the first OpenGL window.
     ///
     /// If a different library is already loaded, this function will return an error.
+    #[cfg(feature = "std")]
     #[doc(alias = "SDL_GL_LoadLibrary")]
     pub fn gl_load_library<P: AsRef<::std::path::Path>>(&self, path: P) -> Result<(), String> {
         unsafe {
@@ -1032,6 +1039,7 @@ impl VideoSubsystem {
     /// If no Vulkan library is loaded, the default library will be loaded upon creation of the first Vulkan window.
     ///
     /// If a different library is already loaded, this function will return an error.
+    #[cfg(feature = "std")]
     #[doc(alias = "SDL_Vulkan_LoadLibrary")]
     pub fn vulkan_load_library<P: AsRef<::std::path::Path>>(&self, path: P) -> Result<(), String> {
         unsafe {
@@ -1092,6 +1100,7 @@ impl fmt::Display for WindowBuildError {
     }
 }
 
+#[cfg(feature = "std")]
 impl Error for WindowBuildError {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         match self {
@@ -1495,7 +1504,10 @@ impl Window {
                 return Err(get_error());
             }
             let mut result = vec![0; size as usize];
-            result.copy_from_slice(std::slice::from_raw_parts(data as *const u8, size as usize));
+            result.copy_from_slice(core::slice::from_raw_parts(
+                data as *const u8,
+                size as usize,
+            ));
             sys::SDL_free(data);
             Ok(result)
         }
@@ -2052,7 +2064,7 @@ pub struct DriverIterator {
 // which only happens if index is outside the range
 // 0..SDL_GetNumVideoDrivers()
 fn get_video_driver(index: i32) -> &'static str {
-    use std::str;
+    use core::str;
 
     unsafe {
         let buf = sys::SDL_GetVideoDriver(index);
@@ -2085,7 +2097,7 @@ impl Iterator for DriverIterator {
 
     #[inline]
     fn nth(&mut self, n: usize) -> Option<&'static str> {
-        use std::convert::TryInto;
+        use core::convert::TryInto;
 
         self.index = match n.try_into().ok().and_then(|n| self.index.checked_add(n)) {
             Some(index) if index < self.length => index,
@@ -2110,7 +2122,7 @@ impl DoubleEndedIterator for DriverIterator {
 
     #[inline]
     fn nth_back(&mut self, n: usize) -> Option<&'static str> {
-        use std::convert::TryInto;
+        use core::convert::TryInto;
 
         self.length = match n.try_into().ok().and_then(|n| self.length.checked_sub(n)) {
             Some(length) if length > self.index => length,
@@ -2123,7 +2135,7 @@ impl DoubleEndedIterator for DriverIterator {
 
 impl ExactSizeIterator for DriverIterator {}
 
-impl std::iter::FusedIterator for DriverIterator {}
+impl core::iter::FusedIterator for DriverIterator {}
 
 /// Gets an iterator of all video drivers compiled into the SDL2 library.
 #[inline]
