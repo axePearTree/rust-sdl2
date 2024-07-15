@@ -1,13 +1,15 @@
 use alloc::borrow::ToOwned;
 use alloc::ffi::{CString, NulError};
 use alloc::string::String;
-use core::cell::Cell;
 use core::ffi::CStr;
 use core::fmt;
 use core::marker::PhantomData;
 use core::mem::transmute;
 use core::sync::atomic::{AtomicBool, AtomicU32, Ordering};
 use libc::c_char;
+
+#[cfg(feature = "std")]
+use core::cell::Cell;
 
 use crate::sys;
 
